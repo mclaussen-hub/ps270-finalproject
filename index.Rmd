@@ -19,9 +19,8 @@ I will be using the following dataset from Pew Research Center about “How the 
 
 https://www.pewresearch.org/internet/2025/04/03/how-the-us-public-and-ai-experts-view-artificial-intelligence/ 
 
-```{r}
+```{r setup}
 library(readr)
 ATP_W152 <- read_csv("~/Downloads/W152_Aug24/ATP W152.csv")
-View(ATP_W152)
 ```
 
