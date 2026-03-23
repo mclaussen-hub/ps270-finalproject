@@ -1,0 +1,26 @@
+---
+title: "PS270 Final Project"
+author: "Maggie Claussen"
+description: "My final project"
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+
+## Project thoughts
+
+I am interested in exploring data related to Artificial Intelligence infrastructure implementation in communities across the United States. I would like to look at data centers, AI companies being trademarked, and public opinion data on the local response. 
+
+## Hypothesis, Research Question, and IV/DV's
+
+I will be using the following dataset from the article “POLITICO asked 2,000 people about data centers — and made 5 charts.” I am planning to switch my focus towards a public opinion analysis as the local response surrounding AI data center infrastructure is interesting to me. I plan to continue to search for more current data sets that include multiple variables for the cause. My current research question is: How does one's partisanship impact approval around local data center implementation? I hypothesize that because technofuturism is more upheld by the Republican party (especially MAGA Republicans) and environmentalism is more commonly associated with the Democratic party, there would be higher support for local implementation of data centers. The explanatory variable is partisanship, which would be measured by survey research, while the outcome variable is the opinion or belief that they hold on AI data centers. This data set provides a variety of survey questions that assess public's opinion of several economic, ecological, and governmental impacts of data centers. Public opinion research is tough because it is so nuanced and reducing bias in survey questions is nearly impossible. The way our brains process information is entirely dependent on our previous experiences. To make the confounding variables more difficult, a person could have background knowledge that their answers did not capture. However, I would like to see if there are partisan influences on AI opinions due to the rapid development of LLM’s in countless industries. If the data shows that there is a partisan impact, we can assume that the information political parties are putting out about data centers are impacting public opinion in order to make political decisions surrounding AI development (i.e. data centers, local investments, etc.). If there is an insignificant Sample Average Treatment effect in the field, my hypothesis would be disproven.
+
+https://www.politico.com/news/2026/02/17/data-centers-public-knowledge-5-charts-00769974 
+
+```{r setup}
+library(readr)
+ATP_W152 <- read_csv("~/Downloads/W152_Aug24/ATP W152.csv")
+```
+
