@@ -1,0 +1,104 @@
+---
+title: "PS270 Final Project"
+author: "Maggie Claussen"
+description: "My final project"
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+
+## Project thoughts
+
+I am interested in exploring data related to Artificial Intelligence infrastructure implementation in communities across the United States. I would like to look at data centers, AI companies being trademarked, and public opinion data on the local response. 
+
+## Hypothesis, Research Question, and IV/DV's
+
+I will be using the following dataset from the article “POLITICO asked 2,000 people about data centers — and made 5 charts.” I am planning to switch my focus towards a public opinion analysis as the local response surrounding AI data center infrastructure is interesting to me. I plan to continue to search for more current data sets that include multiple variables for the cause. My current research question is: How does one's partisanship impact approval around local data center implementation? I hypothesize that because technofuturism is more upheld by the Republican party (especially MAGA Republicans) and environmentalism is more commonly associated with the Democratic party, there would be higher support for local implementation of data centers. The explanatory variable is partisanship, which would be measured by survey research, while the outcome variable is the opinion or belief that they hold on AI data centers. This data set provides a variety of survey questions that assess public's opinion of several economic, ecological, and governmental impacts of data centers. Public opinion research is tough because it is so nuanced and reducing bias in survey questions is nearly impossible. The way our brains process information is entirely dependent on our previous experiences. To make the confounding variables more difficult, a person could have background knowledge that their answers did not capture. However, I would like to see if there are partisan influences on AI opinions due to the rapid development of LLM’s in countless industries. If the data shows that there is a partisan impact, we can assume that the information political parties are putting out about data centers are impacting public opinion in order to make political decisions surrounding AI development (i.e. data centers, local investments, etc.). If there is an insignificant Sample Average Treatment effect in the field, my hypothesis would be disproven.
+
+https://www.politico.com/news/2026/02/17/data-centers-public-knowledge-5-charts-00769974 
+
+**All results are weighted using Iterative Proportional Fitting, or 'Raking'. The results are  weighted by interlocking age and gender, state, education and race.
+
+```{r setup}
+library(tidyverse)
+library(readxl)
+datacenters <- read_excel("~/Downloads/PS270/tpp-data-centers-poll.xlsx") 
+```
+
+## Cleaning Data and renaming columns
+```{r}
+datacenters <- datacenters |> 
+  filter(if_any(everything(), ~ !is.na(.x) & .x != "")) |>
+  select(where(~ any(!is.na(.)))) |>
+  mutate(across(everything(), ~na_if(.x, ""))) |>
+  select(-`Close and sparse`, -...48, -`Planned`)
+
+datacenters <- datacenters |>
+  rename(
+    qanda = ...1,
+    gender_total = ...2,
+    male = Gender,
+    female = ...4,
+    twentyfour = Age,
+    thirtyfour = ...7,
+    fortyfour = ...8,
+    fiftyfour = ...9,
+    sixtyfour = ...10,
+    elder = ...11,
+    graduate = Education,
+    nongraduate = ...14,
+    trump24 = `2024 Vote`,
+    harris24 = ...17,
+    nonvote24 = ...18,
+    currentrepublican = `Current Midterm Vote`,
+    currentdemocrat = ...21,
+    currentundecided = ...22,
+    white = Race,
+    black = ...25,
+    hispanic = ...26,
+    asian = ...27,
+    less25k = Income,
+    less49k = ...30,
+    less99k = ...31,
+    over100k = ...32,
+    maga_trump = `MAGA Trump`,
+    non_maga_trump = ...35,
+    maga_republican = `MAGA Republican`,
+    non_maga_republican = ...38,
+    one_mile = Proximity,
+    three_miles = ...41,
+    five_miles = ...42,
+    ten_miles = ...43,
+    twenty_miles = ...44,
+    over_twenty_miles = ...45,
+    perfectly_informed = Knowledge,
+    well_informed = ...53,
+    moderately_informed = ...54,
+    slightly_informed = ...55,
+    unsure = ...56,
+    poorly_informed = ...57
+    )
+```
+
+## Polished Data Visualization
+```{r}
+datacenters |>
+  filter(qanda %in% c("Strongly Support",
+                      "Support",
+                      "Neither Support nor Oppose",
+                      "Oppose",
+                      "Strongly Oppose")) |>
+  select(qanda, male, female) |>
+  pivot_longer(cols = c(male, female),
+               names_to = "gender",
+               values_to = "percent") |>
+  mutate(percent = as.numeric(percent)) |>
+  ggplot(aes(x = qanda, y = percent, fill = gender)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Support for Data Centers by Gender",
+       x = "Response Category",
+       y = "Percent")
+```
