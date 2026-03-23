@@ -116,7 +116,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/unnamed-chunk-2-1.png","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1547,13 +1547,94 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <h2 id="project-thoughts">Project thoughts</h2>
 <p>I am interested in exploring data related to Artificial Intelligence infrastructure implementation in communities across the United States. I would like to look at data centers, AI companies being trademarked, and public opinion data on the local response.</p>
 <h2 id="hypothesis-research-question-and-ivdvs">Hypothesis, Research Question, and IV/DV’s</h2>
-<p>I will be using the following dataset from Pew Research Center about “How the U.S. Public and AI Experts View Artificial Intelligence.” I am planning to switch my focus away from data center infrastructure and towards a public opinion analysis as the local response is interesting to me. I plan to continue to search for more current datasets that include multiple variables for the cause. My current research question is: How does the public opinion shift around AI due to occupation or attitude of the current company one is at? I would love to acknowledge education as well—thinking about how teachers and students are impacted by AI development. Aspects of capitalism will be a key part of this. Does capitalism have an impact on public opinion? I hypothesize that if one’s opinion on the use of AI (especially for the purpose of economic efficiency) is dependent on the industry they are going into or in currently. The explanatory variable is the industry, which would be measured by survey research, while the outcome variable is the opinion or belief that they hold on AI. This dataset provides a variety of survey questions that assess public opinion of those polled. Public opinion research is tough because it is so nuanced and reducing bias in survey questions is nearly impossible. The way our brains process information is entirely dependent on our previous experiences. However, I would like to see if there is a systemic cause for AI opinions due to the rapid development of LLM’s in countless industries. If the data shows that STEM fields, for example, have a higher support rate for AI usage, we would know that there is a causation that those in that field will make different political decisions surrounding AI development (i.e. data centers, local investments, etc.). If there is wide variation of opinions in the field, my hypothesis would be disproven.</p>
-<p><a href="https://www.pewresearch.org/internet/2025/04/03/how-the-us-public-and-ai-experts-view-artificial-intelligence/" class="uri">https://www.pewresearch.org/internet/2025/04/03/how-the-us-public-and-ai-experts-view-artificial-intelligence/</a></p>
+<p>I will be using the following dataset from the article “POLITICO asked 2,000 people about data centers — and made 5 charts.” I am planning to switch my focus towards a public opinion analysis as the local response surrounding AI data center infrastructure is interesting to me. I plan to continue to search for more current data sets that include multiple variables for the cause. My current research question is: How does one’s partisanship impact approval around local data center implementation? I hypothesize that because technofuturism is more upheld by the Republican party (especially MAGA Republicans) and environmentalism is more commonly associated with the Democratic party, there would be higher support for local implementation of data centers. The explanatory variable is partisanship, which would be measured by survey research, while the outcome variable is the opinion or belief that they hold on AI data centers. This data set provides a variety of survey questions that assess public’s opinion of several economic, ecological, and governmental impacts of data centers. Public opinion research is tough because it is so nuanced and reducing bias in survey questions is nearly impossible. The way our brains process information is entirely dependent on our previous experiences. To make the confounding variables more difficult, a person could have background knowledge that their answers did not capture. However, I would like to see if there are partisan influences on AI opinions due to the rapid development of LLM’s in countless industries. If the data shows that there is a partisan impact, we can assume that the information political parties are putting out about data centers are impacting public opinion in order to make political decisions surrounding AI development (i.e. data centers, local investments, etc.). If there is an insignificant Sample Average Treatment effect in the field, my hypothesis would be disproven.</p>
+<p><a href="https://www.politico.com/news/2026/02/17/data-centers-public-knowledge-5-charts-00769974" class="uri">https://www.politico.com/news/2026/02/17/data-centers-public-knowledge-5-charts-00769974</a></p>
+<p>**All results are weighted using Iterative Proportional Fitting, or ‘Raking’. The results are weighted by interlocking age and gender, state, education and race.</p>
 <div class="layout-chunk" data-layout="l-body">
 <div class="sourceCode">
-<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://readr.tidyverse.org'>readr</a></span><span class='op'>)</span></span>
-<span><span class='va'>ATP_W152</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readr.tidyverse.org/reference/read_delim.html'>read_csv</a></span><span class='op'>(</span><span class='st'>"~/Downloads/W152_Aug24/ATP W152.csv"</span><span class='op'>)</span></span></code></pre>
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidyverse.tidyverse.org'>tidyverse</a></span><span class='op'>)</span></span>
+<span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://readxl.tidyverse.org'>readxl</a></span><span class='op'>)</span></span>
+<span><span class='va'>datacenters</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://readxl.tidyverse.org/reference/read_excel.html'>read_excel</a></span><span class='op'>(</span><span class='st'>"~/Downloads/PS270/tpp-data-centers-poll.xlsx"</span><span class='op'>)</span> </span></code></pre>
 </div>
+</div>
+<h2 id="cleaning-data-and-renaming-columns">Cleaning Data and renaming columns</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>datacenters</span> <span class='op'>&lt;-</span> <span class='va'>datacenters</span> <span class='op'>|&gt;</span> </span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/across.html'>if_any</a></span><span class='op'>(</span><span class='fu'><a href='https://tidyselect.r-lib.org/reference/everything.html'>everything</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='op'>~</span> <span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>.x</span><span class='op'>)</span> <span class='op'>&amp;</span> <span class='va'>.x</span> <span class='op'>!=</span> <span class='st'>""</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='fu'><a href='https://tidyselect.r-lib.org/reference/where.html'>where</a></span><span class='op'>(</span><span class='op'>~</span> <span class='fu'><a href='https://rdrr.io/r/base/any.html'>any</a></span><span class='op'>(</span><span class='op'>!</span><span class='fu'><a href='https://rdrr.io/r/base/NA.html'>is.na</a></span><span class='op'>(</span><span class='va'>.</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/across.html'>across</a></span><span class='op'>(</span><span class='fu'><a href='https://tidyselect.r-lib.org/reference/everything.html'>everything</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='op'>~</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/na_if.html'>na_if</a></span><span class='op'>(</span><span class='va'>.x</span>, <span class='st'>""</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='op'>-</span><span class='va'>`Close and sparse`</span>, <span class='op'>-</span><span class='va'>...48</span>, <span class='op'>-</span><span class='va'>`Planned`</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>datacenters</span> <span class='op'>&lt;-</span> <span class='va'>datacenters</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/rename.html'>rename</a></span><span class='op'>(</span></span>
+<span>    qanda <span class='op'>=</span> <span class='va'>...1</span>,</span>
+<span>    gender_total <span class='op'>=</span> <span class='va'>...2</span>,</span>
+<span>    male <span class='op'>=</span> <span class='va'>Gender</span>,</span>
+<span>    female <span class='op'>=</span> <span class='va'>...4</span>,</span>
+<span>    twentyfour <span class='op'>=</span> <span class='va'>Age</span>,</span>
+<span>    thirtyfour <span class='op'>=</span> <span class='va'>...7</span>,</span>
+<span>    fortyfour <span class='op'>=</span> <span class='va'>...8</span>,</span>
+<span>    fiftyfour <span class='op'>=</span> <span class='va'>...9</span>,</span>
+<span>    sixtyfour <span class='op'>=</span> <span class='va'>...10</span>,</span>
+<span>    elder <span class='op'>=</span> <span class='va'>...11</span>,</span>
+<span>    graduate <span class='op'>=</span> <span class='va'>Education</span>,</span>
+<span>    nongraduate <span class='op'>=</span> <span class='va'>...14</span>,</span>
+<span>    trump24 <span class='op'>=</span> <span class='va'>`2024 Vote`</span>,</span>
+<span>    harris24 <span class='op'>=</span> <span class='va'>...17</span>,</span>
+<span>    nonvote24 <span class='op'>=</span> <span class='va'>...18</span>,</span>
+<span>    currentrepublican <span class='op'>=</span> <span class='va'>`Current Midterm Vote`</span>,</span>
+<span>    currentdemocrat <span class='op'>=</span> <span class='va'>...21</span>,</span>
+<span>    currentundecided <span class='op'>=</span> <span class='va'>...22</span>,</span>
+<span>    white <span class='op'>=</span> <span class='va'>Race</span>,</span>
+<span>    black <span class='op'>=</span> <span class='va'>...25</span>,</span>
+<span>    hispanic <span class='op'>=</span> <span class='va'>...26</span>,</span>
+<span>    asian <span class='op'>=</span> <span class='va'>...27</span>,</span>
+<span>    less25k <span class='op'>=</span> <span class='va'>Income</span>,</span>
+<span>    less49k <span class='op'>=</span> <span class='va'>...30</span>,</span>
+<span>    less99k <span class='op'>=</span> <span class='va'>...31</span>,</span>
+<span>    over100k <span class='op'>=</span> <span class='va'>...32</span>,</span>
+<span>    maga_trump <span class='op'>=</span> <span class='va'>`MAGA Trump`</span>,</span>
+<span>    non_maga_trump <span class='op'>=</span> <span class='va'>...35</span>,</span>
+<span>    maga_republican <span class='op'>=</span> <span class='va'>`MAGA Republican`</span>,</span>
+<span>    non_maga_republican <span class='op'>=</span> <span class='va'>...38</span>,</span>
+<span>    one_mile <span class='op'>=</span> <span class='va'>Proximity</span>,</span>
+<span>    three_miles <span class='op'>=</span> <span class='va'>...41</span>,</span>
+<span>    five_miles <span class='op'>=</span> <span class='va'>...42</span>,</span>
+<span>    ten_miles <span class='op'>=</span> <span class='va'>...43</span>,</span>
+<span>    twenty_miles <span class='op'>=</span> <span class='va'>...44</span>,</span>
+<span>    over_twenty_miles <span class='op'>=</span> <span class='va'>...45</span>,</span>
+<span>    perfectly_informed <span class='op'>=</span> <span class='va'>Knowledge</span>,</span>
+<span>    well_informed <span class='op'>=</span> <span class='va'>...53</span>,</span>
+<span>    moderately_informed <span class='op'>=</span> <span class='va'>...54</span>,</span>
+<span>    slightly_informed <span class='op'>=</span> <span class='va'>...55</span>,</span>
+<span>    unsure <span class='op'>=</span> <span class='va'>...56</span>,</span>
+<span>    poorly_informed <span class='op'>=</span> <span class='va'>...57</span></span>
+<span>    <span class='op'>)</span></span></code></pre>
+</div>
+</div>
+<h2 id="polished-data-visualization">Polished Data Visualization</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>datacenters</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>qanda</span> <span class='op'><a href='https://rdrr.io/r/base/match.html'>%in%</a></span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Strongly Support"</span>,</span>
+<span>                      <span class='st'>"Support"</span>,</span>
+<span>                      <span class='st'>"Neither Support nor Oppose"</span>,</span>
+<span>                      <span class='st'>"Oppose"</span>,</span>
+<span>                      <span class='st'>"Strongly Oppose"</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/select.html'>select</a></span><span class='op'>(</span><span class='va'>qanda</span>, <span class='va'>male</span>, <span class='va'>female</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://tidyr.tidyverse.org/reference/pivot_longer.html'>pivot_longer</a></span><span class='op'>(</span>cols <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>male</span>, <span class='va'>female</span><span class='op'>)</span>,</span>
+<span>               names_to <span class='op'>=</span> <span class='st'>"gender"</span>,</span>
+<span>               values_to <span class='op'>=</span> <span class='st'>"percent"</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span><span class='op'>(</span>percent <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/numeric.html'>as.numeric</a></span><span class='op'>(</span><span class='va'>percent</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>|&gt;</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>qanda</span>, y <span class='op'>=</span> <span class='va'>percent</span>, fill <span class='op'>=</span> <span class='va'>gender</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_col</a></span><span class='op'>(</span>position <span class='op'>=</span> <span class='st'>"dodge"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_y_continuous</a></span><span class='op'>(</span>labels <span class='op'>=</span> <span class='fu'>scales</span><span class='fu'>::</span><span class='fu'><a href='https://scales.r-lib.org/reference/percent_format.html'>percent_format</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span>title <span class='op'>=</span> <span class='st'>"Support for Data Centers by Gender"</span>,</span>
+<span>       x <span class='op'>=</span> <span class='st'>"Response Category"</span>,</span>
+<span>       y <span class='op'>=</span> <span class='st'>"Percent"</span><span class='op'>)</span></span></code></pre>
+</div>
+<p><img src="index_files/figure-html5/unnamed-chunk-2-1.png" alt="" width="624" /></p>
 </div>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
