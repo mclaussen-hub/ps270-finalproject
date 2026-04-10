@@ -101,5 +101,5 @@ datacenters |>
   labs(title = "Support for Data Centers by Gender",
        x = "Response Category",
        y = "Percent")
-datacenters
+print(datacenters)
 ```
