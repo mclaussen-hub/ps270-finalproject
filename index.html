@@ -116,7 +116,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/unnamed-chunk-2-1.png","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["index_files/anchor-4.2.2/anchor.min.js","index_files/bowser-1.9.3/bowser.min.js","index_files/distill-2.2.21/template.v2.js","index_files/figure-html5/unnamed-chunk-2-1.png","index_files/figure-html5/unnamed-chunk-3-1.png","index_files/header-attrs-2.17/header-attrs.js","index_files/header-attrs-2.30/header-attrs.js","index_files/jquery-3.6.0/jquery-3.6.0.js","index_files/jquery-3.6.0/jquery-3.6.0.min.js","index_files/jquery-3.6.0/jquery-3.6.0.min.map","index_files/popper-2.6.0/popper.min.js","index_files/tippy-6.2.7/tippy-bundle.umd.min.js","index_files/tippy-6.2.7/tippy-light-border.css","index_files/tippy-6.2.7/tippy.css","index_files/tippy-6.2.7/tippy.umd.min.js","index_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1544,7 +1544,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 
 <div class="d-article">
-<h2 id="project-thoughts">Project thoughts</h2>
+<h2 id="initial-project-thoughts">Initial project thoughts</h2>
 <p>I am interested in exploring data related to Artificial Intelligence infrastructure implementation in communities across the United States. I would like to look at data centers, AI companies being trademarked, and public opinion data on the local response.</p>
 <h2 id="hypothesis-research-question-and-ivdvs">Hypothesis, Research Question, and IV/DV’s</h2>
 <p>I will be using the following dataset from the article “POLITICO asked 2,000 people about data centers — and made 5 charts.” I am planning to switch my focus towards a public opinion analysis as the local response surrounding AI data center infrastructure is interesting to me. I plan to continue to search for more current data sets that include multiple variables for the cause. My current research question is: How does one’s partisanship impact approval around local data center implementation? I hypothesize that because technofuturism is more upheld by the Republican party (especially MAGA Republicans) and environmentalism is more commonly associated with the Democratic party, there would be higher support for local implementation of data centers. The explanatory variable is partisanship, which would be measured by survey research, while the outcome variable is the opinion or belief that they hold on AI data centers. This data set provides a variety of survey questions that assess public’s opinion of several economic, ecological, and governmental impacts of data centers. Public opinion research is tough because it is so nuanced and reducing bias in survey questions is nearly impossible. The way our brains process information is entirely dependent on our previous experiences. To make the confounding variables more difficult, a person could have background knowledge that their answers did not capture. However, I would like to see if there are partisan influences on AI opinions due to the rapid development of LLM’s in countless industries. If the data shows that there is a partisan impact, we can assume that the information political parties are putting out about data centers are impacting public opinion in order to make political decisions surrounding AI development (i.e. data centers, local investments, etc.). If there is an insignificant Sample Average Treatment effect in the field, my hypothesis would be disproven.</p>
@@ -1636,7 +1636,62 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </div>
 <p><img src="index_files/figure-html5/unnamed-chunk-2-1.png" alt="" width="624" /></p>
 </div>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h2 id="support-for-data-center-by-parisanship-visualization">Support for Data Center by Parisanship Visualization</h2>
+<div class="layout-chunk" data-layout="l-body">
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='va'>data_centers</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span></span>
+<span>  Partisanship <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Democrat"</span>, <span class='st'>"Republican"</span><span class='op'>)</span>,</span>
+<span>  `Strongly support` <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.118</span>, <span class='fl'>0.160</span><span class='op'>)</span>,</span>
+<span>  Support           <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.279</span>, <span class='fl'>0.323</span><span class='op'>)</span>,</span>
+<span>  Neither           <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.298</span>, <span class='fl'>0.211</span><span class='op'>)</span>,</span>
+<span>  Oppose            <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.148</span>, <span class='fl'>0.101</span><span class='op'>)</span>,</span>
+<span>  `Strongly oppose` <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.088</span>, <span class='fl'>0.094</span><span class='op'>)</span>,</span>
+<span>  `Don't know`      <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.057</span>, <span class='fl'>0.045</span><span class='op'>)</span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>data_centers_long</span> <span class='op'>&lt;-</span> <span class='va'>data_centers</span> <span class='op'><a href='https://magrittr.tidyverse.org/reference/pipe.html'>%&gt;%</a></span></span>
+<span>  <span class='fu'><a href='https://tidyr.tidyverse.org/reference/pivot_longer.html'>pivot_longer</a></span><span class='op'>(</span></span>
+<span>    cols <span class='op'>=</span> <span class='op'>-</span><span class='va'>Partisanship</span>,</span>
+<span>    names_to <span class='op'>=</span> <span class='st'>"Response"</span>,</span>
+<span>    values_to <span class='op'>=</span> <span class='st'>"Share"</span><span class='op'>)</span></span>
+<span><span class='va'>data_centers_long</span></span></code></pre>
+</div>
+<pre><code># A tibble: 12 × 3
+   Partisanship Response         Share
+   &lt;chr&gt;        &lt;chr&gt;            &lt;dbl&gt;
+ 1 Democrat     Strongly support 0.118
+ 2 Democrat     Support          0.279
+ 3 Democrat     Neither          0.298
+ 4 Democrat     Oppose           0.148
+ 5 Democrat     Strongly oppose  0.088
+ 6 Democrat     Don&#39;t know       0.057
+ 7 Republican   Strongly support 0.16 
+ 8 Republican   Support          0.323
+ 9 Republican   Neither          0.211
+10 Republican   Oppose           0.101
+11 Republican   Strongly oppose  0.094
+12 Republican   Don&#39;t know       0.045</code></pre>
+<div class="sourceCode">
+<pre class="sourceCode r"><code class="sourceCode r"><span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://ggplot2.tidyverse.org'>ggplot2</a></span><span class='op'>)</span></span>
+<span><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://scales.r-lib.org'>scales</a></span><span class='op'>)</span></span>
+<span></span>
+<span><span class='va'>bar_partisanship</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span><span class='op'>(</span><span class='va'>data_centers_long</span>,</span>
+<span>       <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span><span class='op'>(</span>x <span class='op'>=</span> <span class='va'>Partisanship</span>, y <span class='op'>=</span> <span class='va'>Share</span>, fill <span class='op'>=</span> <span class='va'>Response</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_bar</a></span><span class='op'>(</span>stat <span class='op'>=</span> <span class='st'>"identity"</span>, position <span class='op'>=</span> <span class='st'>"fill"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/scale_continuous.html'>scale_y_continuous</a></span><span class='op'>(</span>labels <span class='op'>=</span> <span class='va'>percent</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>labs</a></span><span class='op'>(</span></span>
+<span>    title <span class='op'>=</span> <span class='st'>"Support for AI Data Centers by Partisanship"</span>,</span>
+<span>    subtitle <span class='op'>=</span> <span class='st'>"Would you support or oppose a new data center within 3 miles of where you live?"</span>,</span>
+<span>    x <span class='op'>=</span> <span class='cn'>NULL</span>,</span>
+<span>    y <span class='op'>=</span> <span class='st'>"Share of respondents"</span>,</span>
+<span>    fill <span class='op'>=</span> <span class='st'>"Response"</span><span class='op'>)</span> <span class='op'>+</span></span>
+<span>  <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggtheme.html'>theme_minimal</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span><span class='va'>bar_partisanship</span></span></code></pre>
+</div>
+<p><img src="index_files/figure-html5/unnamed-chunk-3-1.png" alt="" width="624" /></p>
+</div>
+<h2 id="analysis-for-support-of-ai-data-centers-by-partisanship">Analysis for Support of AI Data Centers by Partisanship</h2>
+<p>The research question asks whether partisan identity influences support for data center implementation, with partisanship serving as the explanatory variable and approval of local data centers as the outcome variable. I hypothesized that Republicans—particularly those aligned with technofuturist and pro-growth narratives—would express higher support for data centers, while Democrats, who are more commonly associated with environmentalism and sensitivity to local externalities, would demonstrate lower levels of approval. The visualization of partisan support patterns offers partial support for this hypothesis. Republicans display higher overall and more decisive support for local data centers, particularly in the “strongly support” category, while Democrats exhibit lower support and a larger share of neutral responses. This result shows that partisan differences operate less through outright polarization and more through differences in framing, certainty, and emphasis on competing considerations such as economic growth versus environmental or community impact. As a result, the estimated partisan effect is substantively meaningful but moderate rather than extreme, rejecting a null hypothesis of no partisan influence while falling short of highly polarized issue alignment. Public opinion in this domain appears structured by partisan information environments and elite cues rather than fixed ideological commitments alone. While the survey data cannot establish direct causality or fully account for confounding factors such as prior knowledge or local experience, the observed partisan differences indicate that political messaging surrounding AI development and infrastructure plausibly shapes public sentiment. Consequently, the hypothesis is not disproven but refined: partisanship matters not as a binary determinant of approval, but as a lens through which voters interpret the costs and benefits of AI-driven development.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

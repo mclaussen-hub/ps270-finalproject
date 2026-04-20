@@ -104,23 +104,40 @@ datacenters |>
 ```
 
 
-## Visualization for Hypothesis: Support for Data Center by Parisanship
+## Support for Data Center by Parisanship Visualization
 ```{r}
-datacenters |>
-  filter(qanda %in% c("Strongly Support",
-                      "Support",
-                      "Neither Support nor Oppose",
-                      "Oppose",
-                      "Strongly Oppose")) |>
-  select(qanda, male, female) |>
-  pivot_longer(cols = c(male, female),
-               names_to = "gender",
-               values_to = "percent") |>
-  mutate(percent = as.numeric(percent)) |>
-  ggplot(aes(x = qanda, y = percent, fill = gender)) +
-  geom_col(position = "dodge") +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(title = "Support for Data Centers by Gender",
-       x = "Response Category",
-       y = "Percent")
+data_centers <- tibble(
+  Partisanship = c("Democrat", "Republican"),
+  `Strongly support` = c(0.118, 0.160),
+  Support           = c(0.279, 0.323),
+  Neither           = c(0.298, 0.211),
+  Oppose            = c(0.148, 0.101),
+  `Strongly oppose` = c(0.088, 0.094),
+  `Don't know`      = c(0.057, 0.045))
+
+data_centers_long <- data_centers %>%
+  pivot_longer(
+    cols = -Partisanship,
+    names_to = "Response",
+    values_to = "Share")
+data_centers_long
+
+library(ggplot2)
+library(scales)
+
+bar_partisanship <- ggplot(data_centers_long,
+       aes(x = Partisanship, y = Share, fill = Response)) +
+  geom_bar(stat = "identity", position = "fill") +
+  scale_y_continuous(labels = percent) +
+  labs(
+    title = "Support for AI Data Centers by Partisanship",
+    subtitle = "Would you support or oppose a new data center within 3 miles of where you live?",
+    x = NULL,
+    y = "Share of respondents",
+    fill = "Response") +
+  theme_minimal()
+bar_partisanship
 ```
+## Analysis for Support of AI Data Centers by Partisanship
+The research question asks whether partisan identity influences support for data center implementation, with partisanship serving as the explanatory variable and approval of local data centers as the outcome variable. I hypothesized that Republicans—particularly those aligned with technofuturist and pro-growth narratives—would express higher support for data centers, while Democrats, who are more commonly associated with environmentalism and sensitivity to local externalities, would demonstrate lower levels of approval. The visualization of partisan support patterns offers partial support for this hypothesis. Republicans display higher overall and more decisive support for local data centers, particularly in the “strongly support” category, while Democrats exhibit lower support and a larger share of neutral responses. This result shows that partisan differences operate less through outright polarization and more through differences in framing, certainty, and emphasis on competing considerations such as economic growth versus environmental or community impact. As a result, the estimated partisan effect is substantively meaningful but moderate rather than extreme, rejecting a null hypothesis of no partisan influence while falling short of highly polarized issue alignment. Public opinion in this domain appears structured by partisan information environments and elite cues rather than fixed ideological commitments alone. While the survey data cannot establish direct causality or fully account for confounding factors such as prior knowledge or local experience, the observed partisan differences indicate that political messaging surrounding AI development and infrastructure plausibly shapes public sentiment. Consequently, the hypothesis is not disproven but refined: partisanship matters not as a binary determinant of approval, but as a lens through which voters interpret the costs and benefits of AI-driven development.
+
