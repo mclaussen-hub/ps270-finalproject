@@ -9,7 +9,7 @@ output:
 
 
 
-## Project thoughts
+## Initial project thoughts
 
 I am interested in exploring data related to Artificial Intelligence infrastructure implementation in communities across the United States. I would like to look at data centers, AI companies being trademarked, and public opinion data on the local response. 
 
@@ -83,6 +83,28 @@ datacenters <- datacenters |>
 ```
 
 ## Polished Data Visualization
+```{r}
+datacenters |>
+  filter(qanda %in% c("Strongly Support",
+                      "Support",
+                      "Neither Support nor Oppose",
+                      "Oppose",
+                      "Strongly Oppose")) |>
+  select(qanda, male, female) |>
+  pivot_longer(cols = c(male, female),
+               names_to = "gender",
+               values_to = "percent") |>
+  mutate(percent = as.numeric(percent)) |>
+  ggplot(aes(x = qanda, y = percent, fill = gender)) +
+  geom_col(position = "dodge") +
+  scale_y_continuous(labels = scales::percent_format()) +
+  labs(title = "Support for Data Centers by Gender",
+       x = "Response Category",
+       y = "Percent")
+```
+
+
+## Visualization for Hypothesis: Support for Data Center by Parisanship
 ```{r}
 datacenters |>
   filter(qanda %in% c("Strongly Support",
