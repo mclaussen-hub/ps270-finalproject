@@ -1,0 +1,104 @@
+---
+title: "CodeforLecture22"
+output: html_document
+date: "2026-04-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Two Sided Hypothesis Testing
+
+```{r}
+library(ps270data)
+library(tidyverse)
+
+data(social, package = "qss")
+```
+data
+
+```{r}
+social <- as.tibble(social)
+social
+```
+Permutating labels
+```{r}
+social <- social |>
+  filter(messages %in% c("Neighbors", "Control"))
+
+social |>
+  mutate(messages_permute = sample(messages)) |>
+  select(primary2006, messages, messages_permute)
+```
+
+Let's check how many are in each arm
+```{r}
+table(social$messages)
+```
+
+## Two-sample permutation tests with infer
+calculating the diff in proportion
+
+```{r}
+library(infer)
+social <- social |>
+  mutate(turnout = if_else(primary2006 == 1, "Voted", "Didn't Vote"))
+
+```
+
+```{r}
+est_ate <- social |>
+  specify(turnout ~ messages, success = "Voted") |>
+  calculate(stat = "diff in props", order = c("Neighbors", "Control"))
+est_ate
+```
+
+Setting the hypothesis
+```{r}
+social |>
+  specify(turnout ~ messages, success = "Voted") |>
+  hypothesize(null = "independence")
+```
+Generating the permulations
+
+```{r}
+social |>
+  specify(turnout ~ messages, success = "Voted") |>
+  hypothesize(null = "independence") |>
+  generate(reps = 1000, type = "permute")
+```
+bootstrap is randomly choosing samples
+permutations is assigning random treatment in a new column
+
+calculate the difference in proportions in each sample using the infer package instead of group_by
+
+```{r}
+null_dist <- social |>
+  specify(turnout ~ messages, success = "Voted") |>
+  hypothesize(null = "independence") |>
+  generate(reps = 1000, type = "permute") |>
+  calculate(stat = "diff in props", order = c("Neighbors", "Control"))
+```
+
+```{r}
+null_dist |>
+  visualize()
+```
+
+calculating the p-values
+
+```{r}
+ate_pval <- null_dist |>
+  get_p_value(abs_stat = est_ate, direction = "both")
+ate_pval
+```
+
+visualizing p-value
+
+```{r}
+null_dist |>
+  visualize() +
+  shade_p_value((abs_stat = est_ate, direction = "both"))
+```
+
