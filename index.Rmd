@@ -260,6 +260,7 @@ fig3 <- ggplot(stacked_data, aes(x = Partisanship, y = Share, fill = qanda)) +
   theme_minimal() +
   theme(plot.title = element_text(face = "bold"))
 ```
+
 ```{r}
 print(fig3)
 ```
