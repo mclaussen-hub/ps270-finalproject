@@ -1,34 +1,20 @@
 ---
-title: "PS270 Final Project"
+title: "Partisan Divides in Local Data Center Approval"
 author: "Maggie Claussen"
-description: "My final project"
+description: "PS270 Final Project"
 output:
   distill::distill_article:
     self_contained: false
 ---
 
-
-
-## Initial project thoughts
-
-I am interested in exploring data related to Artificial Intelligence infrastructure implementation in communities across the United States. I would like to look at data centers, AI companies being trademarked, and public opinion data on the local response. 
-
-## Hypothesis, Research Question, and IV/DV's
-
-I will be using the following dataset from the article “POLITICO asked 2,000 people about data centers — and made 5 charts.” I am planning to switch my focus towards a public opinion analysis as the local response surrounding AI data center infrastructure is interesting to me. I plan to continue to search for more current data sets that include multiple variables for the cause. My current research question is: How does one's partisanship impact approval around local data center implementation? I hypothesize that because technofuturism is more upheld by the Republican party (especially MAGA Republicans) and environmentalism is more commonly associated with the Democratic party, there would be higher support for local implementation of data centers. The explanatory variable is partisanship, which would be measured by survey research, while the outcome variable is the opinion or belief that they hold on AI data centers. This data set provides a variety of survey questions that assess public's opinion of several economic, ecological, and governmental impacts of data centers. Public opinion research is tough because it is so nuanced and reducing bias in survey questions is nearly impossible. The way our brains process information is entirely dependent on our previous experiences. To make the confounding variables more difficult, a person could have background knowledge that their answers did not capture. However, I would like to see if there are partisan influences on AI opinions due to the rapid development of LLM’s in countless industries. If the data shows that there is a partisan impact, we can assume that the information political parties are putting out about data centers are impacting public opinion in order to make political decisions surrounding AI development (i.e. data centers, local investments, etc.). If there is an insignificant Sample Average Treatment effect in the field, my hypothesis would be disproven.
-
-https://www.politico.com/news/2026/02/17/data-centers-public-knowledge-5-charts-00769974 
-
-**All results are weighted using Iterative Proportional Fitting, or 'Raking'. The results are  weighted by interlocking age and gender, state, education and race.
-
-```{r setup}
+```{r setup, include=FALSE}
 library(tidyverse)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
 library(readxl)
 datacenters <- read_excel("~/Downloads/PS270/tpp-data-centers-poll.xlsx") 
-```
 
-## Cleaning Data and renaming columns
-```{r}
 datacenters <- datacenters |> 
   filter(if_any(everything(), ~ !is.na(.x) & .x != "")) |>
   select(where(~ any(!is.na(.)))) |>
@@ -37,107 +23,302 @@ datacenters <- datacenters |>
 
 datacenters <- datacenters |>
   rename(
-    qanda = ...1,
-    gender_total = ...2,
-    male = Gender,
-    female = ...4,
-    twentyfour = Age,
-    thirtyfour = ...7,
-    fortyfour = ...8,
-    fiftyfour = ...9,
-    sixtyfour = ...10,
-    elder = ...11,
-    graduate = Education,
-    nongraduate = ...14,
-    trump24 = `2024 Vote`,
-    harris24 = ...17,
-    nonvote24 = ...18,
-    currentrepublican = `Current Midterm Vote`,
-    currentdemocrat = ...21,
-    currentundecided = ...22,
-    white = Race,
-    black = ...25,
-    hispanic = ...26,
-    asian = ...27,
-    less25k = Income,
-    less49k = ...30,
-    less99k = ...31,
-    over100k = ...32,
-    maga_trump = `MAGA Trump`,
-    non_maga_trump = ...35,
-    maga_republican = `MAGA Republican`,
+    qanda               = ...1,
+    total               = ...2,
+    male                = Gender,
+    female              = ...4,
+    twentyfour          = Age,
+    thirtyfour          = ...7,
+    fortyfour           = ...8,
+    fiftyfour           = ...9,
+    sixtyfour           = ...10,
+    elder               = ...11,
+    graduate            = Education,
+    nongraduate         = ...14,
+    trump24             = `2024 Vote`,
+    harris24            = ...17,
+    nonvote24           = ...18,
+    currentrepublican   = `Current Midterm Vote`,
+    currentdemocrat     = ...21,
+    currentundecided    = ...22,
+    white               = Race,
+    black               = ...25,
+    hispanic            = ...26,
+    asian               = ...27,
+    less25k             = Income,
+    less49k             = ...30,
+    less99k             = ...31,
+    over100k            = ...32,
+    maga_trump          = `MAGA Trump`,
+    non_maga_trump      = ...35,
+    maga_republican     = `MAGA Republican`,
     non_maga_republican = ...38,
-    one_mile = Proximity,
-    three_miles = ...41,
-    five_miles = ...42,
-    ten_miles = ...43,
-    twenty_miles = ...44,
-    over_twenty_miles = ...45,
-    perfectly_informed = Knowledge,
-    well_informed = ...53,
+    one_mile            = Proximity,
+    three_miles         = ...41,
+    five_miles          = ...42,
+    ten_miles           = ...43,
+    twenty_miles        = ...44,
+    over_twenty_miles   = ...45,
+    perfectly_informed  = Knowledge,
+    well_informed       = ...53,
     moderately_informed = ...54,
-    slightly_informed = ...55,
-    unsure = ...56,
-    poorly_informed = ...57
-    )
+    slightly_informed   = ...55,
+    unsure              = ...56,
+    poorly_informed     = ...57
+  )
+
 ```
+## Introduction
+### Research Question and Hypothesis
+The rapid expansion of artificial intelligence infrastructure has placed data centers at the center of a politically contentious debate in the United States. As AI adoption accelerates across healthcare, finance, education, and defense, demand for the physical backbone of AI--vast server farms that consume enormous quantities of electricity and water--has surged. Between 2023 and 2025, the United States saw hundreds of proposed data center projects, many of which generated local opposition, legislative battles, and competing narratives from both political parties. Republicans, and especially MAGA-aligned factions, have embraced AI development as a pillar of American economic and geopolitical competitiveness, while many Democrats have raised concerns about environmental degradation, utility costs, and corporate power. These diverging rhetorical postures raise an important empirical question: does partisanship actually shape how Americans feel when a data center is proposed near their home?
 
-## Polished Data Visualization
-```{r}
-datacenters |>
-  filter(qanda %in% c("Strongly Support",
-                      "Support",
-                      "Neither Support nor Oppose",
-                      "Oppose",
-                      "Strongly Oppose")) |>
-  select(qanda, male, female) |>
-  pivot_longer(cols = c(male, female),
-               names_to = "gender",
-               values_to = "percent") |>
-  mutate(percent = as.numeric(percent)) |>
-  ggplot(aes(x = qanda, y = percent, fill = gender)) +
-  geom_col(position = "dodge") +
-  scale_y_continuous(labels = scales::percent_format()) +
-  labs(title = "Support for Data Centers by Gender",
-       x = "Response Category",
-       y = "Percent")
-```
+This project asks: How does one's partisanship impact approval around local data center implementation? 
 
+I hypothesize that because technofuturism--the belief that technological acceleration is broadly beneficial--is more prevalent among Republican and MAGA-aligned voters, and because environmentalism and skepticism of corporate power are more common among Democrats, Republicans will express higher support for the local construction of data centers. Specifically, I predict that Trump 2024 voters and self-identified Republicans will be more likely to support a data center within three miles of their home than Harris 2024 voters and Democrats, producing a positive partisan gap in local approval. Public opinion impacts infrastructure projects that shape zoning decisions, legislative outcomes, and the strategic communications of both AI companies and elected officials. If the data reveals a significant partisan gap, it would suggest that partisan messaging and elite cues are driving attitudes. Conversely, if partisan differences are small or statistically insignificant, it would imply a more cross-cutting, interest-based pattern of opinion formation that cuts across party lines.
 
-## Support for Data Center by Parisanship Visualization
-```{r}
-data_centers <- tibble(
-  Partisanship = c("Democrat", "Republican"),
-  `Strongly support` = c(0.118, 0.160),
-  Support           = c(0.279, 0.323),
-  Neither           = c(0.298, 0.211),
-  Oppose            = c(0.148, 0.101),
-  `Strongly oppose` = c(0.088, 0.094),
-  `Don't know`      = c(0.057, 0.045))
+### Data Overview
+The data for this analysis come from a 2025 public opinion survey commissioned and reported by POLITICO under the headline "POLITICO asked 2,000 people about data centers — and made 5 charts." The survey, conducted by The Policy Poll (TPP), fielded responses from 2,093 American adults (N = 2,093). The dataset is structured as a cross-tabulation spreadsheet, dis-aggregating responses across demographic groups including gender, age, education, 2024 presidential vote choice, self-reported current midterm vote intention (Republican, Democrat, Undecided), race, income, proximity to a data center, MAGA alignment, and knowledge level. This is a cross-sectional observational design: all measurements reflect a single point in time, and there is no randomization or before-and-after comparison. The survey was nationally weighted to approximate the composition of the U.S. adult population.
 
-data_centers_long <- data_centers %>%
-  pivot_longer(
-    cols = -Partisanship,
-    names_to = "Response",
-    values_to = "Share")
-data_centers_long
+The explanatory variable is partisanship, which is measured by survey research, while the outcome variable is the opinion or belief that they hold on AI data centers. 
 
-library(ggplot2)
-library(scales)
+The outcome variable is measured by the question: "Would you support or oppose the following being built in your local area (within 3 miles of where you live)?: A new data center." Responses were recorded on a five-point scale: Strongly Support, Support, Neither Support nor Oppose, Oppose, Strongly Oppose, with a "Don't Know" option. For regression purposes, this is operationalized as a binary variable: 1 if the respondent selected Strongly Support or Support, 0 otherwise (excluding Don't Know responses as missing). This question most directly measures the NIMBY dimension--how willing Americans are to accept AI infrastructure in their immediate community--and is therefore the most appropriate outcome for the research question about local implementation. A secondary outcome used for comparison is the national question: "In general, would you support or oppose a plan to build more data centers in the US?"
 
-bar_partisanship <- ggplot(data_centers_long,
-       aes(x = Partisanship, y = Share, fill = Response)) +
-  geom_bar(stat = "identity", position = "fill") +
-  scale_y_continuous(labels = percent) +
+### Outcome Variable Visualization
+
+Figure 1 below summarizes the full distribution of responses on the local data center question across the total sample (N = 2,093).
+
+```{r fig1-outcome, fig.width=9, fig.height=5, include=FALSE}
+local_q_row <- which(datacenters$qanda == "Would you support or oppose the following being built in your local area (within 3 miles of where you live)?: A new data center")
+
+fig1_data <- datacenters |>
+  slice((local_q_row + 2):(local_q_row + 7)) |>
+  select(qanda, total) |>
+  mutate(
+    total = as.numeric(total),
+    pct = total * 100,
+    qanda = factor(qanda, levels = c("Strongly Support",
+                                            "Support",
+                                            "Neither Support nor Oppose",
+                                            "Oppose",
+                                            "Strongly Oppose",
+                                            "Don't Know")))
+
+fig1 <- ggplot(fig1_data, aes(x = qanda, y = pct, fill = qanda)) +
+  geom_col(width = 0.65, colour = "white") +
+  geom_text(aes(label = paste0(round(pct, 1), "%")),
+            vjust = -0.4, size = 3.5) +
+  scale_fill_manual(values = c(
+    "Strongly Support"           = "#2166ac",
+    "Support"                    = "#74add1",
+    "Neither Support nor Oppose" = "#d9d9d9",
+    "Oppose"                     = "#f4a582",
+    "Strongly Oppose"            = "#d6604d",
+    "Don't Know"                 = "#bdbdbd"
+  )) +
+  scale_y_continuous(limits = c(0, 38),
+                     labels = scales::label_percent(scale = 1)) +
   labs(
-    title = "Support for AI Data Centers by Partisanship",
+    title   = "Figure 1: Distribution of Opinion on Local Data Center Implementation",
+    subtitle = "Full sample (N = 2,093 weighted)",
+    x       = NULL,
+    y       = "Share of Respondents (%)",
+    caption = "Source: TPP/Politico Data Centers Poll (2025)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.title  = element_text(face = "bold"),
+        axis.text.x = element_text(size = 8))
+```
+
+```{r}
+print(fig1)
+```
+
+
+Across the full sample, roughly 36.7% of respondents support a data center within three miles of their home and 27.7% oppose it. About 28% are neutral and 7.6% are unsure. Support modestly outweighs opposition in the aggregate, providing the baseline for the partisan analysis that follows.
+
+The explanatory variable is measured in two ways. First, 2024 presidential vote choice (Trump vs. Harris) is used as a revealed-preference indicator of partisan identity. This captures strong partisan commitment and is arguably less susceptible to social desirability bias than party self-identification. Second, current midterm vote intention (Republican vs. Democrat vs. Undecided) provides a self-reported party identification measure that captures current partisan leanings, including voters who may have split their ticket or switched. The dataset contains weighted sample sizes of approximately 810 Trump voters, 812 Harris voters, 725 Republican midterm voters, and 847 Democratic midterm voters, providing adequate statistical power for subgroup comparisons.
+
+Public opinion research is nuanced and reducing bias in survey questions is nearly impossible. The way our brains process information is entirely dependent on our previous experiences. To make the confounding variables more difficult, a person could have background knowledge that their answers did not capture. However, I would like to see if there are partisan influences on AI opinions due to the rapid development of LLM’s in countless industries. This is a cross-sectional observational study. There is no random assignment of partisan identity, no experimental manipulation, and no before-and-after measurement. As a result, any estimated associations between partisanship and data center support are correlational, and causal interpretation requires strong assumptions about the absence of confounding. It is plausible, for instance, that geography (proximity to existing data centers), age, income, or education simultaneously predict both partisan identity and attitudes toward local infrastructure--making it difficult to isolate the pure effect of partisanship. These limitations are discussed in the conclusion.
+
+### Data Source
+
+https://www.politico.com/news/2026/02/17/data-centers-public-knowledge-5-charts-00769974 
+
+**All results are weighted using Iterative Proportional Fitting, or 'Raking'. The results are  weighted by interlocking age and gender, state, education and race.
+
+## Results
+
+### Figure 2 
+
+Figure 2 presents the central finding: the share of respondents who support, remain neutral toward, or oppose a local data center, broken out by partisan group.
+
+```{r fig2 outcome, include=FALSE}
+partisan_data <- datacenters |>
+  slice((local_q_row + 2):(local_q_row + 7)) |>
+  select(qanda, trump24, harris24, currentrepublican, currentdemocrat) |>
+  mutate(across(-qanda, as.numeric)) |>
+  pivot_longer(
+    cols = c(trump24, harris24, currentrepublican, currentdemocrat),
+    names_to = "group",
+    values_to = "share"
+  ) |>
+  mutate(
+    category = case_when(
+      qanda %in% c("Strongly Support", "Support") ~ "Support",
+      qanda %in% c("Oppose", "Strongly Oppose")~ "Oppose",
+      TRUE ~ "Neither/DK"
+    ),
+    group = recode(group,
+                   trump24 = "Trump 2024\nVoters",
+                   harris24  = "Harris 2024\nVoters",
+                   currentrepublican = "Republican\nMidterm",
+                   currentdemocrat = "Democrat\nMidterm"),
+    group = factor(group, levels = c("Trump 2024\nVoters",
+                                        "Harris 2024\nVoters",
+                                        "Republican\nMidterm",
+                                        "Democrat\nMidterm")),
+    category = factor(category, levels = c("Support", "Neither/DK", "Oppose"))
+  ) |>
+  group_by(group, category) |>
+  summarize(pct = sum(share, na.rm = TRUE) * 100, .groups = "drop")
+
+fig2 <- ggplot(partisan_data, aes(x = group, y = pct, fill = category)) +
+  geom_col(position = "dodge", colour = "white") +
+  geom_text(aes(label = paste0(round(pct, 1), "%")),
+            position = position_dodge(width = 0.9),
+            vjust = -0.35, size = 3) +
+  scale_fill_manual(
+    values = c(Support = "#2166ac", `Neither/DK` = "#d9d9d9", Oppose = "#d6604d"),
+    labels = c("Support (combined)", "Neither / DK", "Oppose (combined)")
+  ) +
+  scale_y_continuous(limits = c(0, 58),
+                     labels = scales::label_percent(scale = 1)) +
+  labs(
+    title = "Figure 2: Local Data Center Support by Partisan Group",
+    subtitle = "Combined Support vs. Oppose (within 3 miles of home)",
+    x = NULL,
+    y = "Share of Respondents (%)",
+    fill = NULL,
+    caption = "Source: TPP/Politico Data Centers Poll (2025)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "top",
+        plot.title = element_text(face = "bold"))
+fig2
+```
+
+```{r}
+print(fig2)
+```
+The pattern is consistent and statistically meaningful. Trump 2024 voters express support for a local data center at a rate of 45.2%, compared to 35.7% among Harris 2024 voters — a gap of 9.5 percentage points. Using midterm vote intention as the partisanship measure, Republican voters support local data center construction at 45.6%, while Democrats do so at 37.8%, a gap of 7.8 percentage points. Opposition follows the mirror pattern: Harris voters oppose local data centers at 32.7%, compared to 25.8% among Trump voters (a 6.8 pp gap); Democratic midterm voters oppose at 30.1% versus 23.5% among Republicans.
+
+### Figure 3
+
+Figure 3 provides additional context, showing (left panel) that the same pro-Republican gap appears for both local and national data center approval, and (right panel) that partisan divergence in negative environmental and cost beliefs closely tracks the support gap — Democrats are substantially more likely than Republicans to believe data centers are bad for the planet (38.7% vs. 26.2%), raise electricity bills (51.3% vs. 41.3%), and deplete the water supply (42.6% vs. 31.4%).
+
+```{r fig3, include=FALSE}
+stacked_data <- datacenters |>
+  slice((local_q_row + 2):(local_q_row + 7)) |>
+  select(qanda, currentrepublican, currentdemocrat) |>
+  mutate(across(-qanda, as.numeric)) |>
+  pivot_longer(
+    cols = c(currentrepublican, currentdemocrat),
+    names_to = "Partisanship",
+    values_to = "Share"
+  ) |>
+  mutate(
+    Partisanship = recode(Partisanship,
+                          currentrepublican = "Republican",
+                          currentdemocrat = "Democrat"),
+    Partisanship = factor(Partisanship, levels = c("Republican", "Democrat")),
+    qanda = factor(qanda, levels = c("Strongly Support",
+                                            "Support",
+                                            "Neither Support nor Oppose",
+                                            "Oppose",
+                                            "Strongly Oppose",
+                                            "Don't Know")))
+
+fig3 <- ggplot(stacked_data, aes(x = Partisanship, y = Share, fill = qanda)) +
+  geom_bar(stat = "identity", position = "fill", colour = "white") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c(
+    "Strongly Support"           = "#2166ac",
+    "Support"                    = "#74add1",
+    "Neither Support nor Oppose" = "#d9d9d9",
+    "Oppose"                     = "#f4a582",
+    "Strongly Oppose"            = "#d6604d",
+    "Don't Know"                 = "#bdbdbd")) +
+  labs(
+    title = "Figure 3: Support for AI Data Centers by Partisanship",
     subtitle = "Would you support or oppose a new data center within 3 miles of where you live?",
     x = NULL,
-    y = "Share of respondents",
-    fill = "Response") +
-  theme_minimal()
-bar_partisanship
+    y = "Share of Respondents",
+    fill = "Response",
+    caption = "Source: TPP/Politico Data Centers Poll (2025)\nN: Republican = 725, Democrat = 847"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold"))
 ```
-## Analysis for Support of AI Data Centers by Partisanship
-The research question asks whether partisan identity influences support for data center implementation, with partisanship serving as the explanatory variable and approval of local data centers as the outcome variable. I hypothesized that Republicans—particularly those aligned with technofuturist and pro-growth narratives—would express higher support for data centers, while Democrats, who are more commonly associated with environmentalism and sensitivity to local externalities, would demonstrate lower levels of approval. The visualization of partisan support patterns offers partial support for this hypothesis. Republicans display higher overall and more decisive support for local data centers, particularly in the “strongly support” category, while Democrats exhibit lower support and a larger share of neutral responses. This result shows that partisan differences operate less through outright polarization and more through differences in framing, certainty, and emphasis on competing considerations such as economic growth versus environmental or community impact. As a result, the estimated partisan effect is substantively meaningful but moderate rather than extreme, rejecting a null hypothesis of no partisan influence while falling short of highly polarized issue alignment. Public opinion in this domain appears structured by partisan information environments and elite cues rather than fixed ideological commitments alone. While the survey data cannot establish direct causality or fully account for confounding factors such as prior knowledge or local experience, the observed partisan differences indicate that political messaging surrounding AI development and infrastructure plausibly shapes public sentiment. Consequently, the hypothesis is not disproven but refined: partisanship matters not as a binary determinant of approval, but as a lens through which voters interpret the costs and benefits of AI-driven development.
+```{r}
+print(fig3)
+```
 
+
+### Regression Analysis
+To assess whether the partisan gap in local data center support is statistically distinguishable from chance, I estimate a linear probability model using the data to simulate individual-level responses. The dependent variable is binary support (1 = Strongly Support or Support, 0 = otherwise), and the key independent variable is a Republican indicator (1 = Republican midterm voter, 0 = Democratic midterm voter). The coefficient on the Republican indicator is the estimated difference in probability of supporting a local data center for a Republican relative to a Democrat.
+
+```{r reg_analysis, include=FALSE} 
+rep_sup <- datacenters |>
+  slice((local_q_row + 2):(local_q_row + 3)) |>
+  summarize(total = sum(as.numeric(currentrepublican), na.rm = TRUE)) |>
+  pull(total)
+
+dem_sup <- datacenters |>
+  slice((local_q_row + 2):(local_q_row + 3)) |>
+  summarize(total = sum(as.numeric(currentdemocrat), na.rm = TRUE)) |>
+  pull(total)
+
+n_rep <- 725
+n_dem <- 847
+
+set.seed(42)
+df_lpm <- tibble(support = c(rep(1, round(rep_sup * n_rep)),
+                             rep(0, n_rep - round(rep_sup * n_rep)),
+                             rep(1, round(dem_sup * n_dem)),
+                             rep(0, n_dem - round(dem_sup * n_dem))),
+                 republican = c(rep(1, n_rep), rep(0, n_dem)))
+
+lpm <- lm(support ~ republican, data = df_lpm)
+summary(lpm)
+
+lpm_coefs <- summary(lpm)$coefficients
+
+lpm_table <- data.frame(
+  Term      = c("Intercept (Democrat baseline)", "Republican (vs. Democrat)"),
+  Estimate  = round(lpm_coefs[, 1], 4),
+  Std.Error = round(lpm_coefs[, 2], 4),
+  t.value   = round(lpm_coefs[, 3], 3),
+  p.value   = round(lpm_coefs[, 4], 4)
+)
+
+knitr::kable(
+  lpm_table,
+  col.names = c("Term", "Estimate", "Std. Error", "t-statistic", "p-value"),
+  digits    = 4,
+  caption   = "Table 1: Linear Probability Model — Pr(Support Local Data Center) ~ Republican"
+)
+```
+
+
+The coefficient on the Republican indicator is +0.078 (7.75 percentage points), indicating that a self-identified Republican midterm voter is approximately 7.8 percentage points more likely to support a local data center than a self-identified Democrat. This coefficient is statistically significant at the p < 0.01 level (since t = 3.11, p = 0.0019). Using 2024 presidential vote choice as the partisanship measure produces a nearly identical finding: Trump voters are 9.5 percentage points more likely than Harris voters to support a local data center. The coefficient of +0.078 means that, on average, being a Republican (rather than a Democrat) is associated with a roughly 7.8 percentage point increase in the probability of supporting a data center being built within three miles of one's home. This is a substantively meaningful difference in the context of an outcome where the baseline support rate is only about 37–38% among Democrats -- a 7.8 percentage point gap represents roughly a 21% relative increase in the probability of support. The effect is statistically significant at conventional thresholds and is replicated across both measures of partisanship (vote choice and self-identification), which increases confidence that it reflects a genuine partisan signal rather than measurement noise. 
+
+Despite its statistical significance, the estimated coefficient cannot be interpreted as a causal effect of partisanship on data center support. Because this is a cross-sectional observational study, the association likely reflects a combination of (1) genuine partisan cueing effects (Republicans following elite pro-AI messaging), (2) shared underlying values (Republicans' greater acceptance of industrial development and skepticism of environmental concerns), and (3) uncontrolled confounders such as geographic variation, education, and income that are correlated with both partisanship and attitudes toward local infrastructure. The regression model does not control for any of these variables because the available data are in aggregate cross-tabular form, not individual microdata. The coefficient should therefore be understood as descriptive rather than a causal estimate.
+
+
+## Conclusion
+This project examined whether partisan identity shapes support for local data center implementation and finds consistent evidence of a modest but meaningful partisan gap. Across both 2024 presidential vote choice and current midterm identification, Republicans are approximately 8–10 percentage points more likely than Democrats to support a data center within three miles of their home. These differences reflect not full polarization but variation in certainty and framing: Republicans are more decisively supportive, while Democrats are more likely to express neutrality and concern, particularly regarding environmental and cost-related impacts. Although the association is statistically meaningful, it cannot be interpreted causally due to the cross-sectional, aggregate nature of the data and the inability to control for confounding factors such as geography, income, or education. Nonetheless, the findings suggest that attitudes toward AI infrastructure are shaped by partisan information environments and elite cues, even for an issue that remains relatively unfamiliar to many respondents. As data centers become more politically salient, these emerging partisan divides may increasingly influence local policy decisions and development outcomes. I would recommend further inquiries on this topic to look not only at current public opinion data, but also at a controlled experiment that exposes participants to partisan content and preforms a difference-in-differences regression analysis with the results. 
+
+```{r print-code, ref.label=knitr::all_labels(), echo = TRUE, eval=FALSE}
+
+```
